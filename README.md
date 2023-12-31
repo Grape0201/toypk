@@ -37,6 +37,6 @@ toypk.run({
 ```
 
 # TODOs
-- [ ] read build up factors from python dict
+- [x] read build up factors from python dict
 - [ ] new source types
 - [ ] standard linear coefficient libraries

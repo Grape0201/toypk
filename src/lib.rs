@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use buildup::BuildUpFactorUsed;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use serde::Deserialize;
@@ -37,12 +38,19 @@ struct SourceInput {
 }
 
 #[derive(Debug, Deserialize)]
+struct BuildUpInput {
+    form: String,
+    data: Vec<Vec<f64>>,
+}
+
+#[derive(Debug, Deserialize)]
 struct ToyPkInput {
     primitives: Vec<PrimitveInput>,
     cells: Vec<CellInput>,
     materials: Vec<MaterialInput>,
     source: SourceInput,
     tally_points: Vec<Vec<f64>>,
+    buildup: BuildUpInput,
 }
 
 
@@ -66,14 +74,29 @@ fn run(input_dict: &PyDict) -> PyResult<()> {
             core::Material {name: String::from(&m.name), linear_attenuation_coefficient: m.linear_attenuation_coefficient.clone()}
         ).collect()
     };
-    // TODO
-    // implement buildup factor input conversion
-    let bf = 2.0;
-    let bu = buildup::BuildUpFactorUsed {
-        d: vec![
-            Box::new(buildup::TestingForm {bf}),
-            Box::new(buildup::TestingForm {bf}),
-        ]
+    let bu = match &toypk_input.buildup.form[..] {
+        "gp" =>  {
+            let mut d: Vec<Box<dyn buildup::BuildUpFactor>> = vec![];
+            for dd in toypk_input.buildup.data {
+                d.push(Box::new(buildup::GpForm::new(dd[0], dd[1], dd[2], dd[3], dd[4])));
+            }
+            BuildUpFactorUsed {d}
+        },
+        "capo" =>  {
+            let mut d: Vec<Box<dyn buildup::BuildUpFactor>> = vec![];
+            for dd in toypk_input.buildup.data {
+                d.push(Box::new(buildup::CapoForm::new(dd[0], dd[1], dd[2], dd[3])));
+            }
+            BuildUpFactorUsed {d}
+        },
+        "test" =>  {
+            let mut d: Vec<Box<dyn buildup::BuildUpFactor>> = vec![];
+            for dd in toypk_input.buildup.data {
+                d.push(Box::new(buildup::TestingForm {bf: dd[0]}));
+            }
+            BuildUpFactorUsed {d}
+        },
+        _ => panic!("invalid build up form")
     };
     // TODO
     // add new source type

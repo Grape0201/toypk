@@ -96,7 +96,7 @@ pub struct CapoForm {
 }
 
 impl CapoForm {
-    fn new(b0: f64, b1: f64, b2: f64, b3: f64) -> Self {
+    pub fn new(b0: f64, b1: f64, b2: f64, b3: f64) -> Self {
         CapoForm {b: [b0, b1, b2, b3]}
     }
 
