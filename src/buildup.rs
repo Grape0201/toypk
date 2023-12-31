@@ -6,8 +6,6 @@
 /// 
 /// to add new form, implement `BuildUpFactor` trait
 
-use anyhow::{Result, bail};
-
 const TANHM2: f64 = -0.9640275800758169;  // tanh(-2)
 
 pub trait BuildUpFactor : Send + Sync {
@@ -99,23 +97,6 @@ impl CapoForm {
     pub fn new(b0: f64, b1: f64, b2: f64, b3: f64) -> Self {
         CapoForm {b: [b0, b1, b2, b3]}
     }
-
-    fn from_vec(c: &Vec<Vec<f64>>, energy: f64) -> Result<Self> {
-        if c.len() != 4 {
-            bail!("invalid length for Capo form: {}", c.len());
-        }
-        if energy <= 0. {
-            bail!("invalid energy to create Cap form coefficeints");
-        }
-        let mut b = [0.; 4];
-        for i in 0..3 {
-            if c[i].len() != 5 {
-                bail!("invalid length for {}th data in Capo form: {}", i, c[i].len());
-            }
-            b[i] = (0..5).map(|j| c[i][j] * energy.powi(-(j as i32))).sum();
-        }
-        Ok(CapoForm { b })
-    }
 }
 
 impl BuildUpFactor for CapoForm {
@@ -183,12 +164,5 @@ mod tests {
     fn bf_capo() {
         let capo = CapoForm::new(1., 1., 1., 1.);
         assert_eq!(capo.interpolate(0.), 1.);
-    }
-
-    #[test]
-    #[should_panic]
-    fn bf_capo_invalid_params() {
-        let inp = vec![vec![1.0, 1.0]];
-        CapoForm::from_vec(&inp, 0.).unwrap();
     }
 }
