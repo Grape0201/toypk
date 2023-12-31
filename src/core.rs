@@ -134,28 +134,28 @@ mod tests {
                 },
             ]
         };
-        assert_eq!(g.intersections(&csg::LineSegment::new(0., 0., 0., 2., 0., 0.)), vec![0., 0.5, 1.]);
-        assert_eq!(g.intersections(&csg::LineSegment::new(0., 0., 0., 4., 0., 0.)), vec![0., 0.25, 0.5, 1.]);
-        assert_eq!(g.intersections(&csg::LineSegment::new(0., 0., 0., 0., 4., 0.)), vec![0., 0.25, 0.5, 1.]);
-        assert_eq!(g.intersections(&csg::LineSegment::new(0., 0., 0., 0., 0., -4.)), vec![0., 0.25, 0.5, 1.]);
+        assert_eq!(g.intersections(&csg::LineSegment { p: csg::Point::new(0., 0., 0.), v: csg::Point::new(2., 0., 0.) }), vec![0., 0.5, 1.]);
+        assert_eq!(g.intersections(&csg::LineSegment { p: csg::Point::new(0., 0., 0.), v: csg::Point::new(4., 0., 0.) }), vec![0., 0.25, 0.5, 1.]);
+        assert_eq!(g.intersections(&csg::LineSegment { p: csg::Point::new(0., 0., 0.), v: csg::Point::new(0., 4., 0.) }), vec![0., 0.25, 0.5, 1.]);
+        assert_eq!(g.intersections(&csg::LineSegment { p: csg::Point::new(0., 0., 0.), v: csg::Point::new(0., 0., -4.)}), vec![0., 0.25, 0.5, 1.]);
         assert_eq!(
-            g.attenuation(&csg::LineSegment::new(0., 0., 0., 0., 0., -4.), 0),
+            g.attenuation(&csg::LineSegment { p: csg::Point::new(0., 0., 0.), v: csg::Point::new(0., 0., -4.)}, 0),
             -0.1*1.0 - 0.3*1.0 - 0.01*2.0
         );
         assert_eq!(
-            g.attenuation(&csg::LineSegment::new(0., 0., 0., 0., 0., 4.), 0),
+            g.attenuation(&csg::LineSegment { p: csg::Point::new(0., 0., 0.), v: csg::Point::new(0., 0., 4.)}, 0),
             -0.1*1.0 - 0.3*1.0 - 0.01*2.0
         );
         assert_eq!(
-            g.attenuation(&csg::LineSegment::new(0., 0., 0., 0., 0., 1.5), 0),
+            g.attenuation(&csg::LineSegment { p: csg::Point::new(0., 0., 0.), v: csg::Point::new(0., 0., 1.5)}, 0),
             -0.1*1.0 - 0.3*0.5
         );
         assert_eq!(
-            g.attenuation(&csg::LineSegment::new(3., 0., 0., 1., 0., 0.), 0),
+            g.attenuation(&csg::LineSegment { p: csg::Point::new(3., 0., 0.), v: csg::Point::new(1., 0., 0.)}, 0),
             -0.01*1.0
         );
         assert_eq!(
-            g.attenuation(&csg::LineSegment::new(3., 0., 0., -6., 0., 0.), 0),
+            g.attenuation(&csg::LineSegment { p: csg::Point::new(3., 0., 0.), v: csg::Point::new(-6., 0., 0.)}, 0),
             -0.01*1.0 - 0.3*1.0 - 0.1*2.0 - 0.3*1.0 - 0.01*1.0
         );
     }

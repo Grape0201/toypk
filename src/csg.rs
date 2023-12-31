@@ -94,12 +94,6 @@ pub struct LineSegment {
 }
 
 impl LineSegment {
-    pub fn new(px: f64, py: f64, pz: f64, vx: f64, vy: f64, vz: f64) -> Self {
-        Self {
-            p: Point {x: px, y: py, z: pz},
-            v: Point {x: vx, y: vy, z: vz},
-        }
-    }
     pub fn k(&self, k: f64) -> Point {
         self.p + self.v*k
     }
@@ -397,7 +391,10 @@ mod tests {
 
     #[test]
     fn csg_line_segment() {
-        let ls = LineSegment::new(0., 0., 0., 2., 0., 0.);
+        let ls = LineSegment {
+            p: Point::new(0., 0., 0.),
+            v: Point::new(2., 0., 0.)
+        };
         assert_eq!(ls.length(), 2.);
     }
 
