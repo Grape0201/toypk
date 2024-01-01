@@ -3,8 +3,6 @@
 /// - GP from
 /// - Capo form
 /// - Testing form (for testing)
-/// 
-/// to add new form, implement `BuildUpFactor` trait
 
 const TANHM2: f64 = -0.9640275800758169;  // tanh(-2)
 
@@ -40,15 +38,14 @@ impl BuildUpFactor {
                         k35 * k40k35.powf(zeta.powf(0.8))
                     }
                 };
-                let buf = if k == 1.0 {
+                if k == 1.0 {
                     1. + (b-1.)*x
                 } else {
                     1. + (b-1.) * (k.powf(x)-1.) / (k - 1.)
-                };
-                buf
+                }
             },
+            &BuildUpFactor::CapoForm(b0, b1, b2, b3) => b0 + b1*x + b2*x*x + b3*x*x*x,
             &BuildUpFactor::TestingForm(bf) => bf,
-            &BuildUpFactor::CapoForm(b0, b1, b2, b3) => b0 + b1*x + b2*x*x + b3*x*x*x
         }
     }
 
