@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-use buildup::BuildUpFactorUsed;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use serde::Deserialize;
@@ -76,25 +75,13 @@ fn run(input_dict: &PyDict) -> PyResult<()> {
     };
     let bu = match &toypk_input.buildup.form[..] {
         "gp" =>  {
-            let mut d: Vec<Box<dyn buildup::BuildUpFactor>> = vec![];
-            for dd in toypk_input.buildup.data {
-                d.push(Box::new(buildup::GpForm::new(dd[0], dd[1], dd[2], dd[3], dd[4])));
-            }
-            BuildUpFactorUsed {d}
+            buildup::BuildUpFactorUsed {d: toypk_input.buildup.data.iter().map(|dd| buildup::BuildUpFactor::new_gp(dd[0], dd[1], dd[2], dd[3], dd[4])).collect()}
         },
         "capo" =>  {
-            let mut d: Vec<Box<dyn buildup::BuildUpFactor>> = vec![];
-            for dd in toypk_input.buildup.data {
-                d.push(Box::new(buildup::CapoForm::new(dd[0], dd[1], dd[2], dd[3])));
-            }
-            BuildUpFactorUsed {d}
+            buildup::BuildUpFactorUsed {d: toypk_input.buildup.data.iter().map(|dd| buildup::BuildUpFactor::new_capo(dd[0], dd[1], dd[2], dd[3])).collect()}
         },
         "test" =>  {
-            let mut d: Vec<Box<dyn buildup::BuildUpFactor>> = vec![];
-            for dd in toypk_input.buildup.data {
-                d.push(Box::new(buildup::TestingForm {bf: dd[0]}));
-            }
-            BuildUpFactorUsed {d}
+            buildup::BuildUpFactorUsed {d: toypk_input.buildup.data.iter().map(|dd| buildup::BuildUpFactor::new_testing(dd[0])).collect()}
         },
         _ => panic!("invalid build up form")
     };

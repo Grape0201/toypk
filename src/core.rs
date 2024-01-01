@@ -92,6 +92,7 @@ pub fn run(geom: &Geometry, srcs: &(impl Iterator<Item = source::Source> + Clone
 }
 
 
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -205,8 +206,8 @@ mod tests {
         let bf = 2.0;
         let bu = buildup::BuildUpFactorUsed {
             d: vec![
-                Box::new(buildup::TestingForm {bf}),
-                Box::new(buildup::TestingForm {bf}),
+                buildup::BuildUpFactor::new_testing(bf),
+                buildup::BuildUpFactor::new_testing(bf),
             ]
         };
         let factor_by_group = vec![1.0, 2.0];
