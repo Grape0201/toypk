@@ -40,6 +40,7 @@ struct SourceInput {
 struct BuildUpInput {
     form: String,
     data: Vec<Vec<f64>>,
+    conversion_factor: Vec<f64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -75,13 +76,22 @@ fn run(input_dict: &PyDict) -> PyResult<()> {
     };
     let bu = match &toypk_input.buildup.form[..] {
         "gp" =>  {
-            buildup::BuildUpFactorUsed {d: toypk_input.buildup.data.iter().map(|dd| buildup::BuildUpFactor::new_gp(dd[0], dd[1], dd[2], dd[3], dd[4])).collect()}
+            buildup::BuildUpFactorUsed {
+                d: toypk_input.buildup.data.iter().map(|dd| buildup::BuildUpFactor::new_gp(dd[0], dd[1], dd[2], dd[3], dd[4])).collect(),
+                conversion_factor: toypk_input.buildup.conversion_factor,
+            }
         },
         "capo" =>  {
-            buildup::BuildUpFactorUsed {d: toypk_input.buildup.data.iter().map(|dd| buildup::BuildUpFactor::new_capo(dd[0], dd[1], dd[2], dd[3])).collect()}
+            buildup::BuildUpFactorUsed {
+                d: toypk_input.buildup.data.iter().map(|dd| buildup::BuildUpFactor::new_capo(dd[0], dd[1], dd[2], dd[3])).collect(),
+                conversion_factor: toypk_input.buildup.conversion_factor,
+            }
         },
         "test" =>  {
-            buildup::BuildUpFactorUsed {d: toypk_input.buildup.data.iter().map(|dd| buildup::BuildUpFactor::new_testing(dd[0])).collect()}
+            buildup::BuildUpFactorUsed {
+                d: toypk_input.buildup.data.iter().map(|dd| buildup::BuildUpFactor::new_testing(dd[0])).collect(),
+                conversion_factor: toypk_input.buildup.conversion_factor,
+            }
         },
         _ => panic!("invalid build up form")
     };

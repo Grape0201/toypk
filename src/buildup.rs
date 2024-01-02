@@ -66,8 +66,10 @@ impl BuildUpFactor {
 
 // -----------------------------------------------------------------------------
 pub struct BuildUpFactorUsed {
+    // conversion factors from flux by energy group
+    pub conversion_factor: Vec<f64>,
     // BuidUpFactor by energy group
-    pub d: Vec<BuildUpFactor>
+    pub d: Vec<BuildUpFactor>,
 }
 
 impl BuildUpFactorUsed {
@@ -108,7 +110,7 @@ mod tests {
         assert_eq!(gpd.interpolate(40.0), 1.0089812006220353);
         assert_eq!(gpd.interpolate(1000.0), 1.0089692597254705);
 
-        let gpu = BuildUpFactorUsed { d: vec![gpd]};
+        let gpu = BuildUpFactorUsed { d: vec![gpd], conversion_factor: vec![1.]};
         assert_eq!(gpu.get_buf(0, 0.0), 1.0);
         assert_eq!(gpu.get_buf(0, 1.0), 1.004);
         assert_eq!(gpu.get_buf(0, 2.0), 1.0082789195367863);

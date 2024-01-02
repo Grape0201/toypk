@@ -71,10 +71,15 @@ impl Geometry {
     }
 }
 
-pub fn run(geom: &Geometry, srcs: &(impl Iterator<Item = source::Source> + Clone), tally_point: &csg::Point, factor_by_group: &Vec<f64>, bu: &buildup::BuildUpFactorUsed) -> Vec<(f64, f64)> {
+pub fn run(
+        geom: &Geometry,
+        srcs: &(impl Iterator<Item = source::Source> + Clone),
+        tally_point: &csg::Point, factor_by_group: &Vec<f64>,
+        bu: &buildup::BuildUpFactorUsed
+    ) -> Vec<(f64, f64, f64, f64)> {
     factor_by_group.iter().enumerate().map(|(energy_group_index, factor)| {
         if *factor == 0. {
-            return (0., 0.)
+            return (0., 0., 0., 0.)
         }
         let cloned_srcs = srcs.clone();
         let mut total_k0 = 0.;
@@ -87,7 +92,8 @@ pub fn run(geom: &Geometry, srcs: &(impl Iterator<Item = source::Source> + Clone
             total_k0 += k0;
             total_k1 += k0*buf;
         }
-        (total_k0, total_k1)
+        let c = bu.conversion_factor[energy_group_index];
+        (total_k0, total_k1, c*total_k0, c*total_k1)
     }).collect()
 }
 
@@ -208,13 +214,16 @@ mod tests {
             d: vec![
                 buildup::BuildUpFactor::new_testing(bf),
                 buildup::BuildUpFactor::new_testing(bf),
-            ]
+            ],
+            conversion_factor: vec![1., 1.],
         };
         let factor_by_group = vec![1.0, 2.0];
         let ans = (-0.1_f64*1. - 0.3*1.).exp() / (4.*std::f64::consts::PI * 2.*2.);
         assert_eq!(
             run(&g, &mut source, &p, &factor_by_group, &bu),
-            factor_by_group.into_iter().map(|factor| (factor*ans, factor*ans*bf)).collect::<Vec<(f64, f64)>>()
+            factor_by_group.into_iter().map(|factor|
+                (factor*ans, factor*ans*bf, factor*ans, factor*ans*bf)
+            ).collect::<Vec<(f64, f64, f64, f64)>>()
         );
     }
 }

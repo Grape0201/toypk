@@ -25,6 +25,10 @@ def test_simple():
                 "udata": [10, 10, 10],
             },
             "tally_points": [[2.0, 0.0, 0.0]],
-            "buildup": {"form": "test", "data": [[2.0], [2.0]]},
+            "buildup": {
+                "form": "test",
+                "data": [[2.0], [2.0]],
+                "conversion_factor": [1.0, 1.0],
+            },
         }
     )
