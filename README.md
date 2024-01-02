@@ -1,5 +1,5 @@
 # toypk
-__this is my personal toy project for learning Rust.__
+__this is my personal project for learning Rust.__
 
 toypk is a toy project for point-kernel photon shielding analyses
 
@@ -29,14 +29,17 @@ toypk.run({
         "fdata": [-0.5, 0.5, -0.5, 0.5, -0.5, 0.5],
         "udata": [10, 10, 10],
     },
-    "tally_points": [
-        [2.0, 0.0, 0.0],
-        [3.0, 0.0, 0.0],
-    ],
+    "tally_points": [[2.0, 0.0, 0.0]],
+    "buildup": {
+        "conversion_factor": [1.0, 1.0],
+        "form": "test",
+        "data": [[2.0], [2.0]],
+    },
 })
 ```
 
 # TODOs
 - [x] read build up factors from python dict
 - [ ] new source types
-- [ ] standard linear coefficient libraries
+- [x] standard linear coefficient libraries
+- [ ] standard buildup factor library
